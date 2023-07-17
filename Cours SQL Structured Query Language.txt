@@ -1,0 +1,171 @@
+SQL Structured Query Language
+
+- XAMPP Outil qui permet de mettre en place des services (lancer des serveurs)
+
+3 objectifs :
+
+- Garantir l'intégrité des données
+	Eviter l'altération des données (usure, pannes, erreurs, malveillance)
+	Eviter l'incohérence des données
+		La duplication des données : exemple 2 adresses différentes pour un utilisateur
+		Les valeurs aberrantes : exemple Age < 0
+- Garantir l'indépendance entre données et traitements
+		L'information correspondant à une donnée doit être compréhensible indépendamment
+		Si une données est calculée, on évitera de la stocker en BDD
+- Traitements rationalisés
+	Une fois les données définies, les traitements consistent principalement à ajouter, modifier, supprimer et consulter des données.
+
+-------------------------------------------------------------------------------------
+
+SGBD - Système de gestion de base de données
+
+Ensemble de logiciels daisant l'interface entre l'utilisateur et la BDD
+
+Objectifs :
+	- Stockage et requêtage des données
+	- Multi-utilisateur => gestion des droits d'accès, des collisions
+	- Limiter la redondance (duplication de données) => intégrité des données.
+
+Architecture :
+	On utilise le plus souvent une architecture client/serveur
+
+L'objectif majeur du SGBD étant d'assurer l'intégrité :
+	- Conformité du modèle ; vérifier que les données saisies soient cohérentes
+	- Accès concurrents : eviter les incohérences dues à des modifications multiples au même moment (transactions)
+	- gestion sur panne : garantir le maintien de la cohérence même quand une panne intervient
+	- Autorisation d'accès
+
+----------------------------------------------------------------------------------------
+
+Modèle relationnel
+
+Inventé par Codd (IBM) en 1970
+Permet de fabriquer la BDD et de l'intérroger
+Enregistrement des données sous forme de tableau à 2 dimensions
+
+Vocabulaire 
+Relation = table = classe = ensemble = collection
+Tuple = ligne du tableau = enregistrement = n-uplet
+Attribut = colonne du tableau = propriété
+
+----------------------------------------------------------------------------------------
+
+Création de la BDD
+--> MY SQL Documentation : https://dev.mysql.com/doc/refman/8.0/en/sql-data-definition-statements.html
+
+Dans Query1 :
+create database test;
+
+Pour supprimer une BDD puis la re-créer  :
+drop database test ; create database test;
+
+Pour aller sur la BDD :
+use database;
+
+Création d'un utilisateur :
+create user 'alice'@'localhost' identified by 'P@ssw0rd';
+
+Donner tous les privilèges à un utilisateur :
+grand all privilges on *.* to 'alice'@'localhost';
+
+Mettre à jour les privilèges :
+flush privileges;
+
+Afficher les privilèges à un utilisateur : (ne pas utiliser => revoque non utilisable pour lui retirer des droits)
+show grants for 'username'@'host';
+
+Supprimer un utilisateur :
+drop user 'username'@'host';
+
+
+
+-------------------------------------------------------------------------------------------
+
+Gestion des droits utilisateurs
+
+Sécurité 
+	- Limiter au strict nécessaire les droits des utilisateurs exposés (application web)
+	- Utiliser des mots de passe forts et uniques
+	- Maintenir les logiciels à jour
+
+--------------------------------------------------------------------------------------------
+
+Clé primaire : attribut unique (id)
+Clé primaire composée : regrouper 2 attributs et décider qu'ensemble ils forment une clé primaire (ex : nom de ville + n° du département)
+
+
+--------------------------------------------------------------------------------------------
+
+Les types de données
+
+Chaines binaires 
+	Nombre d'octects fixe : BINARY
+	Longueur variable : VARBINARY
+	Binary Large Object : BLOB
+Booléens
+	3 valeurs : true, false, unknown
+Dates et heures 
+	Date
+	Time/Timestamp with/without timezone
+Divers
+	Xml, Array, Interval
+
+---------------------------------------------------------------------------------------------
+
+
+Opérations sur les tables
+
+Création 
+	Create (temporary) table (if not exists) tbl_name
+		(create_definition...)
+		(table_options)
+		(partition_options);
+
+ex : 
+create table users(
+id int primary key NOT null auto_increment,
+name varchar(100),
+email varchar(255) NOT null
+);
+
+--------------------------------------------------------------------------------------------
+
+Les contraintes
+
+NOT NULL : contraint à avoir une valeur différente de NULL
+DEFAULT : Fournit une valeur par défaut à la colonne
+UNIQUE : Ne permet pas que 2 enregistrements aient la même valeur que la colonne (email)
+CHECK : Active une condition pour qu'un enregistrement soit valide
+INDEX
+PRIMARY KEY : La clé primaire permet d'identifier de manière unique chaque enregistrement.
+	Une clé primaire peut être composée, elle fait dans ce cas téférence à plusieurs atttributs de la table
+FOREIGN KEY : Une clé étangère permet de relier 2 tables.
+
+
+--------------------------------------------------------------------------------------------
+
+Associations
+
+- One-to-One : 0.1 - 0.1
+Permet d'associer un et un seul enregistrement d'une table T1 à un et un seul enregistrement d'une table T2.
+
+- One-to-Many et Many-to-One : 0.1 - 0.n
+
+- Many-to-Many : 0.n - 0.n
+Associer de multiple enregistrement T1 à de multiples enregistrement T2.
+Pour implémenter cette association, il est nécessaire de passer par une table d'association.
+
+- Self-Reference : Permet d'associer un enregistrement d'une table T à un autre enregistrement d'une table T
+L'association sera souvent une association one to many ou many to one
+C'est utilisé lorsque l'on souhaite gérer une arborescence.
+Ex : 	Catégories <-> Catégories enfant
+	Employé <-> Manager
+
+
+
+
+
+
+
+
+
